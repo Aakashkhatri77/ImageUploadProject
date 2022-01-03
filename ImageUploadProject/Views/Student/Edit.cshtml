@@ -4,6 +4,9 @@
     ViewData["Title"] = "Edit";
 }
 
+@*@Html.Raw(TempData["UpdateMessage"])
+@Html.Raw(TempData["SizeMessage"])
+@Html.Raw(TempData["ExtentionMessage"])*@
 <h1>Edit</h1>
 
 <h4>Student</h4>
@@ -17,18 +20,30 @@
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
+                <br>
+           
             </div>
-            <div class="form-group">
-                <label asp-for="Profile" class="control-label"></label>
+         @*   <div class="form-group">
+                <label asp-for="Profile" class="control-label">Profile</label>
                 <input asp-for="Profile" class="form-control" />
                 <span asp-validation-for="Profile" class="text-danger"></span>
+            </div>*@
+
+                   <div class="form-group">
+                <label asp-for="Profile" class="control-label">Profile</label>
+                 <img src="~/Image/@Model.Profile" height="100px" width="120px" />  
+                 <span asp-validation-for="Profile" class="text-danger"></span>
+
+                 
             </div>
+
              <div class="form-group">
 @*                <label asp-for="Profile" class="control-label"></label>
 *@                <input asp-for="ImageFile" class="form-control" />
                 <span asp-validation-for="ImageFile" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <br>
                 <input type="submit" value="Save" class="btn btn-primary"/>
             </div>
         </form>
