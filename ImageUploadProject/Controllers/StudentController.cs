@@ -18,10 +18,6 @@ namespace ImageUploadProject.Controllers
             this._hostEnvironment = hostEnvironment;
         }
 
-        //public StudentController(IWebHostEnvironment hostEnvironment)
-        //{
-        //    this._hostEnvironment = hostEnvironment;
-        //}
         public IActionResult Index()
         {
             var data = db.Students.ToList();
@@ -81,8 +77,7 @@ namespace ImageUploadProject.Controllers
                 }
 
             }
-            /*            return RedirectToAction(nameof(Index));
-            */
+  
             return View(student);
 
         }
@@ -104,13 +99,13 @@ namespace ImageUploadProject.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(IFormFile file, Student student)
+        public async Task<IActionResult> Edit(int id, Student student)
         {
             if (ModelState.IsValid == true)
             {
                 if (student.ImageFile != null)
                 {
-                // Update image to wwwroot/image
+                    // Update image to wwwroot/image
                 string wwwRootPath = _hostEnvironment.WebRootPath;
                 string fileName = Path.GetFileNameWithoutExtension(student.ImageFile.FileName);
                 string extension = Path.GetExtension(student.ImageFile.FileName);
@@ -126,22 +121,26 @@ namespace ImageUploadProject.Controllers
                             {
                                 await student.ImageFile.CopyToAsync(fileStream);
                             }
+
                             db.Entry(student).State = EntityState.Modified;
-                            int Student = await db.SaveChangesAsync();
-                        if (Student > 0)
+                            string imagePath = Path.Combine(_hostEnvironment.WebRootPath, "Image/", TempData["imgPath"].ToString());
+                            var _student = await db.SaveChangesAsync();
+
+                        if (_student > 0)
                         {
-                                
-                                string oldImgPath = (TempData["imgPath"]).ToString();
-/*                                string ImagePath = Path.Combine(wwwRootPath, "/Image/", fileName);
-*/                                if (System.IO.File.Exists(oldImgPath))
-                            {
-                                System.IO.File.Delete(oldImgPath);
+                                /*  var std = await db.Students.FindAsync(id);
+                                  var imagePath = std.Profile.ToString();*/
+                                /*                                string imagePath = Path.Combine(_hostEnvironment.WebRootPath, "Image/", imagePath);
+                                */
+                                if (System.IO.File.Exists(imagePath))
+                                {
+                                    System.IO.File.Delete(imagePath);
+                                }
+                                TempData["UpdateMessage"] = "<script>alert('Data Updated Successfully.')</script>";
+                                ModelState.Clear();
+                                return RedirectToAction(nameof(Index));
                             }
-                            TempData["UpdateMessage"] = "<script>alert('Data Updated Successfully.')</script>";
-                            ModelState.Clear();
-                            return RedirectToAction("Index", "Student");
-                        }
-                        else
+                            else
                         {
                             TempData["UpdateMessage"] = "<script>alert('Data Not Updated.')</script>";
                         }
@@ -165,7 +164,7 @@ namespace ImageUploadProject.Controllers
                     {
                         TempData["UpdateMessage"] = "<script>alert('Data Updated Successfully.')</script>";
                         ModelState.Clear();
-                        return RedirectToAction("Index", "Student");
+                        return RedirectToAction("Index");
                     }
                     else
                     {
@@ -173,12 +172,11 @@ namespace ImageUploadProject.Controllers
                     }
 
                 }
-                
             }
-            return View();
+            return View(student);
         }
-    
-      
+
+
 
 
         //Get: Details
@@ -209,6 +207,12 @@ namespace ImageUploadProject.Controllers
             
 
             var student = await db.Students.FindAsync(id);
+            var imagePath = student.Profile.ToString();
+            imagePath = Path.Combine(_hostEnvironment.WebRootPath, "Image/", imagePath);
+            if (System.IO.File.Exists(imagePath))
+            {
+                System.IO.File.Delete(imagePath);
+            }
             db.Students.Remove(student);
             await db.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
