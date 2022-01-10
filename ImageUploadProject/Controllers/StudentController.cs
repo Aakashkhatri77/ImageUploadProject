@@ -51,7 +51,9 @@ namespace ImageUploadProject.Controllers
                         {
                             await student.ImageFile.CopyToAsync(fileStream);
                         }
+
                         //Insert Record
+                       
                         db.Students.Add(student);
                         int Student = await db.SaveChangesAsync();
                         if (Student > 0)
@@ -63,12 +65,12 @@ namespace ImageUploadProject.Controllers
                         else
                         {
                             TempData["CreateMessage"] = "<script>alert('Data Not Inserted.')</script>";
+
                         }
                     }
                     else
                     {
                         TempData["SizeMessage"] = "<script>alert('Image file should be less than 1mb')</script>";
-
                     }
                 }
                 else
@@ -136,7 +138,7 @@ namespace ImageUploadProject.Controllers
                                 {
                                     System.IO.File.Delete(imagePath);
                                 }
-                                TempData["UpdateMessage"] = "<script>alert('Data Updated Successfully.')</script>";
+                                TempData["UpdateMessage"] = "<script>alert('Data Updatxed Successfully.')</script>";
                                 ModelState.Clear();
                                 return RedirectToAction(nameof(Index));
                             }
@@ -148,11 +150,13 @@ namespace ImageUploadProject.Controllers
                     else
                     {
                         TempData["SizeMessage"] = "<script>alert('Image Size should be less than 1 MB')</script>";
+                            
                     }
                 }
                 else
                 {
                     TempData["ExtensionMessage"] = "<script>alert('Format Not Supported')</script>";
+                        return View(student);
                 }
             }
                 else
